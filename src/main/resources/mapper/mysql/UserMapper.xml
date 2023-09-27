@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="katachi.spring.exercise.repository.UserMapper">
+
+<!-- マッピング定義（担当者名） -->
+<resultMap type="katachi.spring.exercise.form.DisplayUser" id="users">
+	<id column="user_name" property="name" />
+	<result column="id" property="id" />
+</resultMap>
+
+<!-- マッピング定義（リスト取得） -->
+<resultMap type="katachi.spring.exercise.domain.model.TodoList" id="itemList">
+	<id column="id" property="id" />
+	<result column="item_name" property="itemName" />
+	<result column="registration_date" property="registerDate" />
+	<result column="expire_date" property="deadline" />
+	<result column="finished_int" property="completion" />
+	<collection property="dbUser" resultMap="user" columnPrefix="user_"/>
+</resultMap>
+
+<!-- マッピング定義（DBUser） -->
+<resultMap type="katachi.spring.exercise.domain.model.DBUser" id="user">
+	<id column="id" property="userId" />
+	<result column="name" property="manager"/>
+</resultMap>
+
+<!-- ログインユーザー情報取得 -->
+<select id="findLoginUser" resultType="DBUser">
+select * from users where user = #{userName}
+</select>
+
+<!-- 担当者全員取得 -->
+<select id="getNames" resultMap="users">
+select id,user_name from users;
+</select>
+
+<!-- リスト追加 -->
+<insert id="addTodo">
+insert into todo_items (
+user_id,
+item_name,
+registration_date,
+expire_date,
+finished_int
+) values (
+#{dbUser.manager},
+#{itemName},
+CURDATE(),
+#{deadline},
+#{completion}
+);
+</insert>
+
+<!-- todoリスト取得 -->
+<select id="getList" resultMap="itemList">
+ select 
+ todo_items.id,users.user_name as user_name,todo_items.item_name,todo_items.
+ registration_date,todo_items.expire_date,todo_items.finished_int 
+ from todo_items left join users on todo_items.user_id = users.id 
+ where is_deleted != 1 order by expire_date;
+</select>
+
+<!-- todo一件取得 -->
+<select id="getOne" resultMap="itemList">
+ select 
+ todo_items.id,users.user_name as user_name,users.id as user_id,todo_items.item_name,todo_items.
+ registration_date,todo_items.expire_date,todo_items.finished_int 
+ from todo_items left join users on todo_items.user_id = users.id 
+ where todo_items.id = #{id};
+</select>
+
+<!-- 更新 -->
+<update id="updateTodo">
+update todo_items set 
+item_name = #{itemName},user_id = #{dbUser.manager},
+expire_date = #{deadline},finished_int = #{completion} 
+where id = #{id};
+</update>
+
+<!-- 削除フラグ -->
+<update id="deleteFlgOn">
+update todo_items set is_deleted = 1 where id = #{id};
+</update>
+
+<!-- 完了フラグ -->
+<update id="updateCompletionTodo">
+update todo_items set finished_int = 1 where id = #{id};
+</update>
+
+<!-- 検索 -->
+<select id="getListSearch" resultMap="itemList">
+ select 
+ todo_items.id,users.user_name as user_name,todo_items.item_name,todo_items.
+ registration_date,todo_items.expire_date,todo_items.finished_int 
+ from todo_items left join users on todo_items.user_id = users.id 
+ where is_deleted != 1 and item_name like '%${searchWord}%' order by expire_date;
+</select>
+
+</mapper>

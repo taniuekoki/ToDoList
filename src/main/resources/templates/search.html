@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作業一覧</title>
+   <!--CSS読み込み-->
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<!--js読み込み-->
+	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+    <style>
+        /* ボタンを横並びにする */
+        form {
+            display: inline-block;
+        }
+
+        /* 打消し線を入れる */
+        tr.del>td {
+            text-decoration: line-through;
+        }
+
+        /* ボタンのセルは打消し線を入れない */
+        tr.del>td.button {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ナビゲーション -->
+    <nav layout:replace="~{layout/header::header}"></nav>
+    <!-- ナビゲーション ここまで -->
+
+    <!-- コンテナ -->
+    <div class="container" >
+
+        <table class="table table-striped table-hover table-sm my-2">
+            <thead>
+                <tr>
+                    <th scope="col" th:text="#{item}"></th>
+                    <th scope="col" th:text="#{manager}"></th>
+                    <th scope="col" th:text="#{register}"></th>
+                    <th scope="col" th:text="#{deadline}"></th>
+                    <th scope="col" th:text="#{completion}"></th>
+                    <th scope="col" th:text="#{operation}"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+				<!--ループここから-->
+                <tr th:each="item:${todoList}"  th:classappend="${(item.deadline < today ? 'text-danger' : '') +(item.completion == 1 ? ' del text-body' : '')}">
+                    <!--項目名-->
+                    <td class="align-middle" th:text="${item.itemName}"></td>
+                    <!--担当者-->
+                    <td class="align-middle" th:text="${item.dbUser.manager}"></td>
+                    <!--登録日-->
+                    <td class="align-middle" th:text="${#dates.format(item.registerDate,'yyyy-MM-dd')}"></td>
+                    <!--期限日-->
+                    <td class="align-middle" th:text="${#dates.format(item.deadline,'yyyy-MM-dd')}"></td>
+                    
+                    <!--完了チェック-->
+                    <th:block th:if="${item.completion == 0}">
+						<td  class="align-middle">
+							未
+						</td>
+					</th:block>
+			        <th:block th:if="${item.completion == 1}">
+						<td  class="align-middle">
+							完了
+						</td>
+					</th:block>		
+					
+                    <td class="align-middle button">
+						<!--完了ボタン-->
+                        <a class="btn btn-primary" th:href="@{'/todo/completion/'+${item.id}}">
+								完了
+						</a>
+                        
+                        <!--修正ボタン-->
+                        <a class="btn btn-primary" th:href="@{'/todo/edit/'+${item.id}}">
+								修正
+						</a>
+                        
+                        <!--削除ボタン-->
+                        <a class="btn btn-primary" th:href="@{'/todo/delete/'+${item.id}}">
+								削除
+						</a>
+                    </td>
+                </tr>
+                <!--ループここまで-->
+            </tbody>
+        </table>
+    </div>
+    <!-- コンテナ ここまで -->
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作業修正</title>
+   <!--CSS読み込み-->
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<!--js読み込み-->
+	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+</head>
+
+<body>
+    <!-- ナビゲーション -->
+    <nav layout:replace="~{layout/header::header}"></nav>
+    <!-- ナビゲーション ここまで -->
+
+    <!-- コンテナ -->
+    <div class="container">
+        <div class="row my-2">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6 alert alert-info">
+                下記の項目を削除します。よろしいですか？
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <!-- 入力フォーム -->
+        <div class="row my-2">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form th:action="@{/todo/delete}" method="post" th:object="${todoForm}">
+					<input type="hidden" th:field="*{id}" th:value="*{id}">
+                    <div class="form-group">
+                        <label for="item" th:text="#{item}"></label>
+                        <p th:text="*{itemName}" class="form-control"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="manager" th:text="#{manager}"></label>
+				        <p th:text="*{dbUser.manager}" class="form-control"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline" th:text="#{deadline}"></label>
+                        <p class="form-control" th:text="${#dates.format(todoForm.deadline,'yyyy-MM-dd')}"></p>
+                    </div>
+                    <div class="form-group form-check">
+	                    <th:block th:if="${todoForm.completion == 0}">
+							<p>
+								未
+							</p>
+						</th:block>
+				        <th:block th:if="${todoForm.completion == 1}">
+							<p>
+								完了
+							</p>
+						</th:block>		
+                    </div>
+
+                    <input type="submit" value="削除" class="btn btn-danger">
+                    <input type="button" value="キャンセル" class="btn btn-outline-primary" onclick="location.href='./';">
+                </form>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <!-- 入力フォーム ここまで -->
+
+    </div>
+    <!-- コンテナ ここまで -->
+</body>
+
+</html>
