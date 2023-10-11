@@ -15,4 +15,4 @@ Spring Boot の勉強のために制作しました。
 * 作業情報登録・削除・更新・検索機能
 # 実装環境
 バックエンド：Java(SpringBoot),MySQL<br>
-フロントエンド：HTML,CSS(BootStrap)
+フロントエンド：HTML,CSS(BootStrap),Thymeleaf
