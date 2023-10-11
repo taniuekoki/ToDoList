@@ -1,3 +1,7 @@
+作成した時期：令和5年10月<br>
+所要時間：約３５時間<br>
+協力者の有無：無し<br><br>
+
 ![スクリーンショット 2023-10-04 145826](https://github.com/taniuekoki/ToDoList/assets/145744921/aadaa9f2-4b71-4072-a86a-27158c4433f2)
 # ToDoList
 Spring Bootを利用して複数の人で共有して使えるTodoListを制作しました。<br>
